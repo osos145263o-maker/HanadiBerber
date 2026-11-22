@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#09090B" />
+  <title>نتيجة الدفع | حلاق هنادي أبو عوف</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09090b;
+      --panel: #151519;
+      --panel-2: #202026;
+      --gold: #d4af37;
+      --gold-light: #fbbf24;
+      --muted: #a1a1aa;
+      --white: #fafafa;
+      --green: #34d399;
+      --red: #fb7185;
+      --amber: #fbbf24;
+      --blue: #60a5fa;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(212, 175, 55, .12), transparent 28rem),
+        radial-gradient(circle at 90% 90%, rgba(212, 175, 55, .07), transparent 25rem),
+        var(--bg);
+      color: var(--white);
+      font-family: Tahoma, Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      width: min(100%, 560px);
+      background: rgba(21, 21, 25, .96);
+      border: 1px solid rgba(212, 175, 55, .35);
+      border-radius: 28px;
+      padding: 28px 20px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .45), 0 0 38px rgba(212, 175, 55, .08);
+      text-align: center;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold-light);
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #09090b;
+      background: linear-gradient(135deg, var(--gold-light), #b4941f);
+      font-size: 21px;
+    }
+
+    .status-icon {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      font-size: 38px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .status-icon.success { color: var(--green); border-color: rgba(52, 211, 153, .45); background: rgba(52, 211, 153, .1); }
+    .status-icon.failed { color: var(--red); border-color: rgba(251, 113, 133, .45); background: rgba(251, 113, 133, .1); }
+    .status-icon.pending { color: var(--amber); border-color: rgba(251, 191, 36, .45); background: rgba(251, 191, 36, .1); }
+    .status-icon.info { color: var(--blue); border-color: rgba(96, 165, 250, .45); background: rgba(96, 165, 250, .1); }
+
+    h1 { margin: 0 0 10px; font-size: clamp(22px, 5vw, 32px); }
+    .description { color: var(--muted); line-height: 1.8; margin: 0 auto 22px; max-width: 440px; }
+
+    .details {
+      display: none;
+      text-align: right;
+      background: rgba(9, 9, 11, .65);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 18px;
+      padding: 14px;
+      margin: 20px 0;
+    }
+
+    .details.visible { display: block; }
+    .row { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); font-size: 13px; }
+    .row:last-child { border-bottom: 0; }
+    .label { color: var(--muted); }
+    .value { color: var(--white); font-weight: 700; text-align: left; word-break: break-word; }
+
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
+    .button {
+      border: 0;
+      border-radius: 13px;
+      padding: 12px 17px;
+      color: #09090b;
+      background: linear-gradient(135deg, var(--gold-light), #b4941f);
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .button.secondary { color: var(--white); background: var(--panel-2); border: 1px solid rgba(255,255,255,.14); }
+    .button:disabled { opacity: .55; cursor: wait; }
+
+    .spinner {
+      width: 26px;
+      height: 26px;
+      border: 3px solid rgba(255, 255, 255, .2);
+      border-top-color: var(--gold-light);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .small { color: #71717a; font-size: 11px; margin-top: 18px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <main class="card" aria-live="polite">
+    <div class="brand">
+      <span class="brand-mark">✂</span>
+      <span>حلاق هنادي أبو عوف</span>
+    </div>
+
+    <div id="statusIcon" class="status-icon pending">⌛</div>
+    <h1 id="statusTitle">جاري التحقق من نتيجة الدفع</h1>
+    <p id="statusDescription" class="description">نراجع حالة العملية من الخادم. لا تغلق الصفحة.</p>
+    <div id="spinner" class="spinner" aria-label="جاري التحميل"></div>
+
+    <section id="bookingDetails" class="details" aria-label="تفاصيل الحجز">
+      <div class="row"><span class="label">رقم الحجز</span><strong id="bookingId" class="value">—</strong></div>
+      <div class="row"><span class="label">حالة الدفع</span><strong id="paymentStatus" class="value">—</strong></div>
+      <div class="row"><span class="label">حالة الحجز</span><strong id="bookingStatus" class="value">—</strong></div>
+      <div class="row"><span class="label">الموعد</span><strong id="bookingDateTime" class="value">—</strong></div>
+      <div class="row"><span class="label">الحلاق</span><strong id="barberName" class="value">—</strong></div>
+    </section>
+
+    <div class="actions">
+      <a class="button" href="/">العودة للموقع</a>
+      <button id="retryButton" class="button secondary" type="button" hidden>إعادة التحقق</button>
+    </div>
+
+    <p class="small">لا تعتمد الصفحة على قيمة الحالة الموجودة في رابط الرجوع وحدها. التأكيد النهائي يجب أن يأتي من Webhook ميسور.</p>
+  </main>
+
+  <script>
+    // يجب أن يطابق هذا الرابط اسم Edge Function المنشورة لديك.
+    const VERIFY_ENDPOINT = '/functions/v1/verify-moyasar-payment';
+    const MAX_ATTEMPTS = 8;
+    const RETRY_DELAY_MS = 2500;
+
+    const query = new URLSearchParams(window.location.search);
+    const paymentId = query.get('payment_id') || query.get('id') || '';
+    const bookingId = query.get('booking_id') || '';
+
+    const $ = (id) => document.getElementById(id);
+
+    function setStatus(type, icon, title, description) {
+      const iconEl = $('statusIcon');
+      iconEl.className = `status-icon ${type}`;
+      iconEl.textContent = icon;
+      $('statusTitle').textContent = title;
+      $('statusDescription').textContent = description;
+      $('spinner').style.display = type === 'pending' ? 'block' : 'none';
+    }
+
+    function showDetails(data) {
+      const booking = data.booking || data;
+      $('bookingId').textContent = booking.id || booking.booking_id || bookingId || '—';
+      $('paymentStatus').textContent = data.payment_status || booking.payment_status || '—';
+      $('bookingStatus').textContent = data.booking_status || booking.status || '—';
+      $('bookingDateTime').textContent = [booking.booking_date || booking.date, booking.booking_time || booking.time].filter(Boolean).join(' • ') || '—';
+      $('barberName').textContent = booking.barber_name || booking.barber || '—';
+      $('bookingDetails').classList.add('visible');
+    }
+
+    function normalizeState(payload) {
+      const paymentStatus = String(payload.payment_status || payload.payment?.status || '').toLowerCase();
+      const bookingStatus = String(payload.booking_status || payload.booking?.status || '').toLowerCase();
+
+      if (paymentStatus === 'paid' || paymentStatus === 'captured' || paymentStatus === 'authorized') return 'paid';
+      if (paymentStatus === 'failed' || paymentStatus === 'refunded' || paymentStatus === 'voided') return 'failed';
+      if (bookingStatus === 'rejected' || bookingStatus === 'cancelled') return 'failed';
+      return 'pending';
+    }
+
+    async function verifyPayment(attempt = 1) {
+      if (!paymentId && !bookingId) {
+        setStatus('failed', '!', 'بيانات العملية غير موجودة', 'لم نجد رقم الدفع أو رقم الحجز في رابط العودة. تواصل مع الصالون إذا تم خصم المبلغ.');
+        $('retryButton').hidden = false;
+        return;
+      }
+
+      try {
+        const response = await fetch(VERIFY_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ payment_id: paymentId || null, booking_id: bookingId || null })
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || 'تعذر التحقق من العملية');
+
+        showDetails(payload);
+        const state = normalizeState(payload);
+
+        if (state === 'paid') {
+          setStatus('success', '✓', 'تم تأكيد الدفع بنجاح', 'تم استلام العربون وتسجيل حجزك. احتفظ برقم الحجز الظاهر أدناه.');
+          return;
+        }
+
+        if (state === 'failed') {
+          setStatus('failed', '×', 'لم تكتمل عملية الدفع', 'لم يتم تأكيد العربون. يمكنك العودة للموقع والمحاولة مرة أخرى أو التواصل مع الصالون.');
+          $('retryButton').hidden = false;
+          return;
+        }
+
+        if (attempt < MAX_ATTEMPTS) {
+          setStatus('pending', '⌛', 'جاري تأكيد العملية', 'تم استلام نتيجة الدفع الأولية، وننتظر التأكيد النهائي من ميسور...');
+          window.setTimeout(() => verifyPayment(attempt + 1), RETRY_DELAY_MS);
+        } else {
+          setStatus('info', 'i', 'العملية قيد المراجعة', 'لم يصل التأكيد النهائي بعد. لا تعاود الدفع قبل مراجعة حالة الحجز أو التواصل مع الصالون.');
+          $('retryButton').hidden = false;
+        }
+      } catch (error) {
+        console.error('Payment result verification failed:', error);
+        if (attempt < MAX_ATTEMPTS) {
+          setStatus('pending', '⌛', 'جاري إعادة التحقق', 'حدث تأخير مؤقت أثناء الاتصال.');
+          window.setTimeout(() => verifyPayment(attempt + 1), RETRY_DELAY_MS);
+        } else {
+          setStatus('failed', '!', 'تعذر التحقق من العملية', 'لا تعاود الدفع الآن. احتفظ بأي رسالة أو رقم عملية وتواصل مع الصالون.');
+          $('retryButton').hidden = false;
+        }
+      }
+    }
+
+    $('retryButton').addEventListener('click', () => {
+      $('retryButton').hidden = true;
+      setStatus('pending', '⌛', 'جاري التحقق من نتيجة الدفع', 'نراجع حالة العملية من الخادم.');
+      verifyPayment(1);
+    });
+
+    verifyPayment();
+  </script>
+</body>
+</html>
